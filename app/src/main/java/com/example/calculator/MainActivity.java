@@ -457,6 +457,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.button_sqrt:
                 //平分开根
+                if (currentNum.equals("")){
+                    Toast.makeText(MainActivity.this, "请输入要求开方根数值", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 if (isPositive) {
                     double tempNumSqrt = Math.sqrt(Double.parseDouble(currentNum));
                     String NumStrSqrt = MyUtils.formatResult(String.format("%." + MyUtils.RESULT_DECIMAL_MAX_LENGTH + "f", tempNumSqrt));
@@ -492,17 +496,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.button_sin:
                 //sin
-                double tempNumSin = Math.sin(Math.toRadians(Double.parseDouble(currentNum)));
-                String NumStrSin = MyUtils.formatResult(String.format("%." + MyUtils.RESULT_DECIMAL_MAX_LENGTH + "f", tempNumSin));
+                if (currentNum.equals("")){
+                    Toast.makeText(MainActivity.this, "请输入要求sin的角度", Toast.LENGTH_SHORT).show();
+                }else {
+                    double tempNumSin = Math.sin(Math.toRadians(Double.parseDouble(currentNum)));
+                    String NumStrSin = MyUtils.formatResult(String.format("%." + MyUtils.RESULT_DECIMAL_MAX_LENGTH + "f", tempNumSin));
 
-                nowText.setText(NumStrSin);
+                    nowText.setText(NumStrSin);
+                }
+
                 break;
             case R.id.button_cos:
                 //cos
-                double tempNumCos = Math.cos(Math.toRadians(Double.parseDouble(currentNum)));
-                String NumStrCos = MyUtils.formatResult(String.format("%." + MyUtils.RESULT_DECIMAL_MAX_LENGTH + "f", tempNumCos));
+                if (currentNum.equals("")){
+                    Toast.makeText(MainActivity.this, "请输入要求cos的角度", Toast.LENGTH_SHORT).show();
+                }else {
+                    double tempNumCos = Math.cos(Math.toRadians(Double.parseDouble(currentNum)));
+                    String NumStrCos = MyUtils.formatResult(String.format("%." + MyUtils.RESULT_DECIMAL_MAX_LENGTH + "f", tempNumCos));
 
-                nowText.setText(NumStrCos);
+                    nowText.setText(NumStrCos);
+                }
+
                 break;
         }
 
