@@ -27,10 +27,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     //当前输入框
     private TextView nowText;
 
-    private TextView test11;
-
-
-
     //数字1-9
     private Button button_0;
     private Button button_1;
