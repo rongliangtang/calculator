@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.lang.IndexOutOfBoundsException;
 
 import com.example.calculator.Calculator;
 import com.example.calculator.MyUtils;
@@ -26,10 +27,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     //当前输入框
     private TextView nowText;
-
-    private TextView test;
-
-
 
     //数字1-9
     private Button button_0;
@@ -64,6 +61,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     boolean clear_flag; //清空标识
     boolean isOp = false;  //记录当前是否进行过计算操作
     boolean isPositive = true; //判断当前nowTest是否为正数
+    boolean isPoint = false;    //判断是否按过小数点
+    boolean haveOp = false; //记录是否按过运算符号
+
 
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -173,6 +173,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "0");
                 }
+                //设置按下运算符状态为无
+                haveOp = false;
                 break;
             case R.id.button_1:
                 if (isOp) {
@@ -183,6 +185,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "1");
                 }
+                haveOp = false;
                 break;
             case R.id.button_2:
                 if (isOp) {
@@ -193,6 +196,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "2");
                 }
+                haveOp = false;
                 break;
             case R.id.button_3:
                 if (isOp) {
@@ -203,6 +207,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "3");
                 }
+                haveOp = false;
                 break;
             case R.id.button_4:
                 if (isOp) {
@@ -213,6 +218,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "4");
                 }
+                haveOp = false;
                 break;
             case R.id.button_5:
                 if (isOp) {
@@ -223,6 +229,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "5");
                 }
+                haveOp = false;
                 break;
             case R.id.button_6:
                 if (isOp) {
@@ -233,6 +240,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "6");
                 }
+                haveOp = false;
                 break;
             case R.id.button_7:
                 if (isOp) {
@@ -243,6 +251,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "7");
                 }
+                haveOp = false;
                 break;
             case R.id.button_8:
                 if (isOp) {
@@ -253,6 +262,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "8");
                 }
+                haveOp = false;
                 break;
             case R.id.button_9:
                 if (isOp) {
@@ -263,8 +273,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText(currentNum + "9");
                 }
+                haveOp = false;
                 break;
             case R.id.button_add:
+                //如果刚按完加号，则不能再按加号
+                if (haveOp){
+                    break;
+                }
+                //规范化currentNum
+                currentNum = norNum(currentNum);
                 //如果除号后面为0则不往后执行(条件为：miantext有数且最后是除号且nownum是0)
                 Log.d(TAG, "main:" + mainText.getText().toString().length());
                 Log.d(TAG, "now:" + nowText.getText().toString().length());
@@ -286,10 +303,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         }
                     }
                     nowText.setText("");
+
+                    isPoint = false;
+                    haveOp = true;
                 }
 
                 break;
             case R.id.button_sub:
+                if (haveOp){
+                    break;
+                }
+                currentNum = norNum(currentNum);
                 //如果除号后面为0则不往后执行
                 if (currentText.length() >= 1 && currentText.substring(currentText.length() - 1).equals("÷") && currentNum.equals("0")) {
                     Toast.makeText(MainActivity.this, "除数不能为0！", Toast.LENGTH_SHORT).show();
@@ -308,10 +332,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         }
                     }
                     nowText.setText("");
+
+                    isPoint = false;
+                    haveOp = true;
                 }
 
                 break;
             case R.id.button_mul:
+                if (haveOp){
+                    break;
+                }
+                currentNum = norNum(currentNum);
                 //如果除号后面为0则不往后执行
                 if (currentText.length() >= 1 && currentText.substring(currentText.length() - 1).equals("÷") && currentNum.equals("0")) {
                     Toast.makeText(MainActivity.this, "除数不能为0！", Toast.LENGTH_SHORT).show();
@@ -330,10 +361,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         }
                     }
                     nowText.setText("");
+
+                    isPoint = false;
+                    haveOp = true;
                 }
 
                 break;
             case R.id.button_division:
+                if (haveOp){
+                    break;
+                }
+                currentNum = norNum(currentNum);
                 if (isOp) {
                     mainText.setText(currentNum + "÷");
                     isOp = false;
@@ -347,8 +385,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     }
                 }
                 nowText.setText("");
+
+                isPoint = false;
+                haveOp = true;
                 break;
             case R.id.button_equal:
+                currentNum = norNum(currentNum);
                 //如果除号后面为0则不往后执行(条件为：miantext有数且最后是除号且nownum是0)
                 Log.d(TAG, "main:" + mainText.getText().toString().length());
                 Log.d(TAG, "now:" + nowText.getText().toString().length());
@@ -367,15 +409,42 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 //进行过运算，设isOp为true
                 isOp = true;
                 //进行运算操作，把操作后的数字放在nowText中
-                Calculator calculator = new Calculator();
-                String result = calculator.prepareParam(mainText.getText().toString());
-                nowText.setText(result);
+                try {
+                    Calculator calculator = new Calculator();
+                    String result = calculator.prepareParam(mainText.getText().toString());
+                    if (result.equals("表达式错误")){
+                        Toast.makeText(MainActivity.this, "输入有误，请重新输入!", Toast.LENGTH_SHORT).show();
+                        mainText.setText("");
+                        nowText.setText("");
+                        break;
+                    }
+                    nowText.setText(result);
+                }catch (IndexOutOfBoundsException e){
+                    Toast.makeText(MainActivity.this, "输入有误，请重新输入!", Toast.LENGTH_SHORT).show();
+                    mainText.setText("");
+                    nowText.setText("");
+                }
+
                 break;
             case R.id.button_point:
-                nowText.setText(currentNum + ".");
+                //考虑直接按下小数点的情况
+                if (currentNum.equals("")){
+                    nowText.setText("0" + ".");
+                    isPoint = true;
+                    break;
+                }
+
+                if (!isPoint){
+                    nowText.setText(currentNum + ".");
+                    isPoint = true;
+                }else {
+                    Toast.makeText(MainActivity.this, "已经有小数点了哦！", Toast.LENGTH_SHORT).show();
+                }
+
                 //nowText.setText("");
                 break;
             case R.id.button_switch:
+                currentNum = norNum(currentNum);
                 //正负数切换功能
                 if (isPositive) {
                     nowText.setText("-" + currentNum);
@@ -406,6 +475,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } else {
                     nowText.setText("");
                 }
+
+                isPoint = false;
+
                 break;
             case R.id.button_left:
                 //left
@@ -444,4 +516,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     }
+
+    //将currentnum规范化
+    public String norNum(String currentNum){
+        if (currentNum.length() >= 1 && currentNum.substring(currentNum.length() - 1).equals(".")){
+            currentNum += "0";
+        }
+
+        return currentNum;
+    }
+
+
+
+
+
 }

@@ -63,13 +63,13 @@ public class Calculator {
         // 校验格式
         if (!MyUtils.checkFormat(str)) {
             System.out.println("表达式错误！");
-            return null;
+            return "表达式错误";
         }
         // 处理表达式，改为标准表达式
         str = MyUtils.change2StandardFormat(str);
         // 拆分字符和数字
         String[] nums = str.split("[^.0-9]");
-        Log.d(TAG, nums[0] + "----" + nums[1]);
+//        Log.d(TAG, nums[0] + "----" + nums[1]);
         List<Double> numLst = new ArrayList();
         for (int i = 0; i < nums.length; i++) {
             if (!"".equals(nums[i])) {
