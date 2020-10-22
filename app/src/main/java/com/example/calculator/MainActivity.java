@@ -27,7 +27,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     //当前输入框
     private TextView nowText;
 
-    private TextView test;
+    private TextView test11;
 
 
 
