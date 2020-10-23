@@ -13,6 +13,7 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.lang.IndexOutOfBoundsException;
+import java.util.regex.Pattern;
 
 import com.example.calculator.Calculator;
 import com.example.calculator.MyUtils;
@@ -63,6 +64,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     boolean isPositive = true; //判断当前nowTest是否为正数
     boolean isPoint = false;    //判断是否按过小数点
     boolean haveOp = false; //记录是否按过运算符号
+    boolean isBracket = true;  //记录是否有成对括号出现，默认true
 
 
 
@@ -160,6 +162,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         String currentText = mainText.getText().toString();
         //现在输入的运算数
         String currentNum = nowText.getText().toString();
+
+        if (currentText.equals("")){
+            isBracket = true;
+        }
 
         //分别获取按钮的内容至mainText和nowText中
         switch (v.getId()) {
@@ -445,6 +451,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.button_switch:
                 currentNum = norNum(currentNum);
+                //如果currentNum为空则break
+                if (currentNum.equals("")){
+                    break;
+                }
+
                 //正负数切换功能
                 if (isPositive) {
                     nowText.setText("-" + currentNum);
@@ -476,6 +487,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 if (button_clear.getText() == "AC") {
                     mainText.setText("");
                     nowText.setText("");
+
+                    isBracket = true;
                 } else {
                     nowText.setText("");
                 }
@@ -485,13 +498,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.button_left:
                 //left
-                mainText.setText(currentText + "(");
+                //如果isBracket=ture的话说明有成对括号了，left可以按下
+                if (isBracket){
+                    mainText.setText(currentText + "(");
+                    isBracket = false;
+                }else {
+                    Toast.makeText(MainActivity.this, "括号输入有误！", Toast.LENGTH_SHORT).show();
+                }
 
                 break;
             case R.id.button_right:
                 //right
-                mainText.setText(currentText + currentNum + ")");
-                nowText.setText("");
+                //逻辑有点乱，待梳理
+                if (!isBracket && !currentText.substring(currentText.length() - 1).equals("(") || !currentNum.equals("")){
+                    //如果maintext中最后一个不是数字，同样不能按下右括号
+                    if (!isNum(currentText.substring(currentText.length() - 1)) && currentNum.equals("")){
+                        break;
+                    }
+
+                    mainText.setText(currentText + currentNum + ")");
+                    nowText.setText("");
+                    isBracket = true;
+                }else {
+                    Toast.makeText(MainActivity.this, "括号输入有误！", Toast.LENGTH_SHORT).show();
+                }
 
                 break;
             case R.id.button_sin:
@@ -540,8 +570,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         return currentNum;
     }
 
-
-
-
+    //判断该字符串是不是等于数字
+    public boolean isNum(String s){
+        if (s != null && !"".equals(s.trim()))
+            return s.matches("^[0-9]*$");
+        else
+            return false;
+    }
 
 }
